@@ -577,8 +577,9 @@ class FieldRobot:
           ends.append( B ) # new one
           ends[-3][3]=-9  # setting angle to old LastA to -180 deg ((180-135)/5)
           lastA, lastB = A, B
-        if ((ends[num] != None) && ( ((ends[num][3] < 11)&&rowsOnLeft) || ((ends[num][3] > 43) && !rowsOnLeft)) ):
-          break
+        if len(ends)>num:
+          if((ends[num][3] < 11)&&rowsOnLeft) || ((ends[num][3] > 43) && !rowsOnLeft)):
+            break
         line = Line(A[:2],B[:2]) # going through the ends of rows
         A2 = combinedPose( (A[0], A[1], line.angle), (0, offset, 0) )
         B2 = combinedPose( (B[0], B[1], line.angle), (2.0, offset, 0) )
