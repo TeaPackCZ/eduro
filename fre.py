@@ -560,20 +560,26 @@ class FieldRobot:
             (ax,ai), (bx,bi) = (bx,bi), (ax,ai)
         p = self.robot.localisation.pose()
         A = combinedPose( (p[0], p[1], p[2]+math.radians(135-5*ai) ), (ax,0,0) )
+        A.appends(ai)
         B = combinedPose( (p[0], p[1], p[2]+math.radians(135-5*bi) ), (bx,0,0) )
+        B.appends(bi)
         if lastA == None:
           ends.extend( [A,B] )
           lastA, lastB = A, B
-        print "DIST", distance(lastA, A), distance(lastB, B), distance(lastB,A)
-        if distance(lastB,A) < 0.2:
+        print "DIST", distance(lastA[:2], A[:2]), distance(lastB[:2], B[:2]), distance(lastB[:2],A[:2])
+        for endrow in ends:   ## actualization of ends with angle to the that end
+          if distance(endrow[:2],A[:2])<0.2:
+            endrow=A
+          else if distance(endrow[:2],B[:2])<0.2:
+            endrow=B
+        if distance(lastB[:2],A[:2]) < 0.2:
           print "NEXT ROW"
           ends.append( B ) # new one
+          ends[-3][3]=-9  # setting angle to old LastA to -180 deg ((180-135)/5)
           lastA, lastB = A, B
-        if ((ends[num] != None) && ( ((ends[num][1] < 11)&&rowsOnLeft) || ((ends[num][1] > 43) && !rowsOnLeft)) ):
-          # Doufam, ze u && plati pravidlo: prvni neplati a dal se nevyhodnocuje
+        if ((ends[num] != None) && ( ((ends[num][3] < 11)&&rowsOnLeft) || ((ends[num][3] > 43) && !rowsOnLeft)) ):
           break
-        # takhle by měl fungovat kod se zadavanim cisla odpovídajícího řádku do kterého má zajet. (pokud opravdu nevidí ten zasebou)
-        line = Line(A,B) # going through the ends of rows
+        line = Line(A[:2],B[:2]) # going through the ends of rows
         A2 = combinedPose( (A[0], A[1], line.angle), (0, offset, 0) )
         B2 = combinedPose( (B[0], B[1], line.angle), (2.0, offset, 0) )
         line = Line(A2, B2)
