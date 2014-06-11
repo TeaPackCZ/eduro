@@ -569,7 +569,8 @@ class FieldRobot:
           print "NEXT ROW"
           ends.append( B ) # new one
           lastA, lastB = A, B
-        if ((ends[num] != None) && (ends[num][1] < 11)): # Doufam, ze u && plati pravidlo: prvni neplati a dal se nevyhodnocuje
+        if ((ends[num] != None) && ( ((ends[num][1] < 11)&&rowsOnLeft) || ((ends[num][1] > 43) && !rowsOnLeft)) ):
+          # Doufam, ze u && plati pravidlo: prvni neplati a dal se nevyhodnocuje
           break
         # takhle by měl fungovat kod se zadavanim cisla odpovídajícího řádku do kterého má zajet. (pokud opravdu nevidí ten zasebou)
         line = Line(A,B) # going through the ends of rows
